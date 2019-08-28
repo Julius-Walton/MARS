@@ -77,8 +77,26 @@ class Detail extends Component {
     }
   }
 
-  openWindow(selectedRows){
-    console.log(selectedRows)
+  openWindow(selectedRows, displayData){
+
+    let rows = []
+    for (var i = 0; i < selectedRows.data.length; i++){
+      let index = selectedRows.data[i].index
+      rows.push(index)
+    }
+
+    let samples = []
+    for (i = 0; i < rows.length; i++){
+      let index = rows[i]
+      let sample = displayData[index].data[0]
+      samples.push(sample)
+    }
+    
+    for (i = 0; i < samples.length; i++){
+      let igsn = samples[i]
+      var randomnumber = Math.floor((Math.random()*100)+1); 
+      window.open(`https://sesardev.geosamples.org/sample/igsn/${igsn}`,"_blank",'PopUp',randomnumber,'scrollbars=1,menubar=0,resizable=1,width=850,height=500');
+    }
     //window.open(`https://sesardev.geosamples.org/sample/igsn/${igsn}`)
   }
 
@@ -135,14 +153,14 @@ class Detail extends Component {
       filter: true,
       filterType: 'dropdown',
       responsive: 'scroll',
-      customToolbarSelect: selectedRows => (
+      customToolbarSelect: (selectedRows, displayData) => (
         <div>
-            <Button variant="contained" color="primary" onClick={() => this.openWindow(selectedRows)}>View Webpage for Selected Samples</Button>
+            <Button variant="contained" color="primary" onClick={() => this.openWindow(selectedRows, displayData)}>View Webpage for Selected Samples</Button>
         </div>
         
     ),
     }
-    console.log(this.state)
+    
     let theme = createMuiTheme({
       overrides: {
           MUIDataTableSelectCell: {

@@ -111,7 +111,6 @@ class Upload extends Component{
             }
 
             rowData = [...rowData, keyValue]
-            console.log("Row Data: ", rowData)
             this.setState({rowData})
         }
 
@@ -119,7 +118,6 @@ class Upload extends Component{
         for (let i = 0; i < sesarKeys.length; i++){
             columnDefs.push(sesarKeys[i])  
         }
-        console.log(columnDefs)
         this.setState({columnDefs})
    
         
