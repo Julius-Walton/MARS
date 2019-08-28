@@ -11,7 +11,8 @@ function mapStateToProps(state) {
     return { 
         mapFile: state.mapping.mapFile, 
         sourceFiles: state.mapping.sourceFiles, 
-        user: state.auth
+        user: state.auth,
+        uploadSamples: state.upload.samples
     };
 }
 

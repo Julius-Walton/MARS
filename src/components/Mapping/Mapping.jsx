@@ -11,8 +11,16 @@ class Mapping extends Component {
     this.onChangeSourceFiles = this.onChangeSourceFiles.bind(this)
     this.onChangeSourceMap = this.onChangeSourceMap.bind(this)
     this.handleProceed = this.handleProceed.bind(this)
+    this.handleContinue = this.handleContinue.bind(this)
   }
 
+  componentWillMount(e){
+    console.log("Props: ", this.props)
+
+  }
+  componentWillReceiveProps(e){
+    console.log("Props: ", this.props)
+  }
   onChangeSourceMap(e){
     this.props.onChangeMapFileAction(e.target.files[0])
   }
@@ -32,10 +40,15 @@ class Mapping extends Component {
     this.props.onProceed(this.props.mapFile, this.props.sourceFiles)
     this.props.history.push("upload")
   }
+
+  handleContinue(e){
+    e.preventDefault()
+    this.props.history.push("upload")
+  }
  
   render(){
     const displayProceed = () =>{
-      if (this.props.mapFile && this.props.sourceFiles){
+      if (this.props.mapFile && this.props.sourceFiles && (!this.props.uploadSamples)){
         return(
           <div>
             <button type="button" 
@@ -46,6 +59,15 @@ class Mapping extends Component {
           </div>
 
         )
+      }else if (this.props.uploadSamples){
+        return(
+          <button type="button"
+          className="submitButton"
+          onClick={this.handleContinue}>
+          Continue with Data Mapping
+          </button>
+        )
+        
       }
     }
 

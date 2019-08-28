@@ -13,7 +13,7 @@ import { loadState, saveState } from './localstorage';
 import * as serviceWorker from './serviceWorker';
 
 //tomcat web application manager
-// warfile in cirdle
+
 export const history = createBrowserHistory()
 
 const persistedState = loadState();
