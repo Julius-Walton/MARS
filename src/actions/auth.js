@@ -16,7 +16,7 @@ export function signInAction({ username, password }, history) {
         formData.append('password', password)
         const res = await axios.post(`${URL}`, formData);
   
-        //Formating api response in order to get usercode
+        //Format the api response to JSON to get the usercode data
         let options = {ignoreComment: true, alwaysChildren: true};
         let resJSON = await jsCON.xml2js(res.data, options )
         let usercode = resJSON.elements[0].elements[1].elements[0].elements[0].text
@@ -28,7 +28,7 @@ export function signInAction({ username, password }, history) {
           password: password
         });
   
-        history.push('/details');
+        history.push('/mysamples');
       } catch(error) {
         console.log(error)
         dispatch({

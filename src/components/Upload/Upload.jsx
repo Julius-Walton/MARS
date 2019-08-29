@@ -34,13 +34,11 @@ const styles = theme => ({
 class Upload extends Component{
     constructor(props){
         super(props);
-
         this.state={
             rowData: [],
             columnDefs: [],
             originalKeys: [],
-            uploadSamples: [],
-           
+            uploadSamples: []
         }
 
         this.handleOnUpload = this.handleOnUpload.bind(this)
@@ -131,7 +129,9 @@ class Upload extends Component{
         }
 
         if (selectedSamples.length > 0){
-            this.props.onUpload(this.props.mapFile, this.props.uploadSamples, this.props.user, selectedSamples)
+            this.props.onUpload(this.props.mapFile, 
+                this.props.uploadSamples, 
+                this.props.user, selectedSamples)
         }
     }
    
@@ -156,13 +156,18 @@ class Upload extends Component{
         responsive: 'scroll',
         expandableRows: true,
         expandableRowsOnClick: true,
-        //allow rows with no igsn to be selected
+        //only allow rows with no igsn to be selected
         isRowSelectable: (dataIndex) => {
             return this.state.rowData[dataIndex].igsn === ""
         },
         customToolbarSelect: selectedRows => (
             <div>
-                <Button variant="contained" color="primary" onClick={() => this.handleOnUpload(selectedRows)}>Upload</Button>
+                <Button 
+                variant="contained" 
+                color="primary" 
+                onClick={() => this.handleOnUpload(selectedRows)}>
+                    Upload
+                </Button>
             </div>
             
         ),

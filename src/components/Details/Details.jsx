@@ -2,14 +2,9 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import './Details.css'
 import { connect } from 'react-redux';
-
-
-
 import Button from '@material-ui/core/Button';
-
 import PropTypes from 'prop-types';
 import MUIDataTable from 'mui-datatables';
-
 import { withStyles, createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 
 
@@ -36,45 +31,16 @@ class Detail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // Column deffinitions for ag-grid
       columnDefs: ["IGSN", "Name", "Latitude", "Longitude", "Elevation"],
       rowData: [{}],
       loading: true,
-      page_no: 1,
-      limit: 100,
-      sortingFlag: 0,
-      sortSampleNamesFlag: false
     }
 
-    /*this.handleClickNext = this.handleClickNext.bind(this)
-    this.handleClickPrev = this.handleClickPrev.bind(this)*/
-    //TODO: add change limit
-    //this.changeLimit = this.changeLimit.bind(this)*/
     this.sendRequest = this.sendRequest.bind(this)
-    this.handleOpenProfile = this.handleOpenProfile.bind(this)
   }
 
   componentDidMount() {
     this.sendRequest(0)
-  }
-
-  /*handleClickNext(e){
-    e.preventDefault()
-    this.sendRequest(1)
-  };
-
-  handleClickPrev(e){
-    e.preventDefault()
-    if(this.state.page_no !== 1) {
-      this.sendRequest(-1)
-    }
-  };*/
-  handleOpenProfile(e){
-    const length = this.gridApi.getSelectedNodes().length
-    for (var i = 0; i < length; i++){
-      let igsn = this.gridApi.getSelectedNodes()[i].data.IGSN
-      this.openWindow(igsn)
-    }
   }
 
   openWindow(selectedRows, displayData){
@@ -95,9 +61,9 @@ class Detail extends Component {
     for (i = 0; i < samples.length; i++){
       let igsn = samples[i]
       var randomnumber = Math.floor((Math.random()*100)+1); 
-      window.open(`https://sesardev.geosamples.org/sample/igsn/${igsn}`,"_blank",'PopUp',randomnumber,'scrollbars=1,menubar=0,resizable=1,width=850,height=500');
+      window.open(`https://sesardev.geosamples.org/sample/igsn/${igsn}`,
+      "_blank",'PopUp',randomnumber,'scrollbars=1,menubar=0,resizable=1,width=850,height=500');
     }
-    //window.open(`https://sesardev.geosamples.org/sample/igsn/${igsn}`)
   }
 
   sendRequest(num){
@@ -155,10 +121,14 @@ class Detail extends Component {
       responsive: 'scroll',
       customToolbarSelect: (selectedRows, displayData) => (
         <div>
-            <Button variant="contained" color="primary" onClick={() => this.openWindow(selectedRows, displayData)}>View Webpage for Selected Samples</Button>
+            <Button 
+              variant="contained" 
+              color="primary" 
+              onClick={() => this.openWindow(selectedRows, displayData)}>
+                View Webpage for Selected Samples
+            </Button>
         </div>
-        
-    ),
+      ),
     }
     
     let theme = createMuiTheme({
@@ -169,7 +139,8 @@ class Detail extends Component {
               }
           }
       }
-  });
+    });
+
     if(this.state.loading === true) {
       return (
         <div className="outerDiv">
@@ -181,7 +152,6 @@ class Detail extends Component {
             </div>
           </div>
         </div>
-       
       )
     } else {
       
@@ -189,23 +159,20 @@ class Detail extends Component {
         <div style={{ width: "100%", height: "100%" }}>
           <div className="container">
             <div id="left"></div>
-
             <div className="center">
-              <div></div>
-
               <div className ="center">
                     <MuiThemeProvider theme={theme}>
                         <MUIDataTable
-                            title={"Sample Data"}
+                            title={"My Samples"}
                             data={this.state.rowData}
                             columns={this.state.columnDefs}
                             options={options}
                             />
                     </MuiThemeProvider>   
-                </div>
+              </div>
             </div>
+            <div id="right"></div>
           </div>
-          <div id="right"></div>
         </div>
       );
     }
@@ -223,5 +190,5 @@ function mapStateToProps(state){
 }
 
 
-const Details = connect(mapStateToProps)(Detail)
-export default withStyles(styles)(Details)
+const MySamples = connect(mapStateToProps)(Detail)
+export default withStyles(styles)(MySamples)

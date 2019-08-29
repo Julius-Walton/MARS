@@ -2,8 +2,6 @@ import React, { Component } from 'react'
 import Panel from '../Panel/panel'
 import './Mapping.css'
 
-
-
 class Mapping extends Component {
   constructor(props){
     super(props);
@@ -14,13 +12,6 @@ class Mapping extends Component {
     this.handleContinue = this.handleContinue.bind(this)
   }
 
-  componentWillMount(e){
-    console.log("Props: ", this.props)
-
-  }
-  componentWillReceiveProps(e){
-    console.log("Props: ", this.props)
-  }
   onChangeSourceMap(e){
     this.props.onChangeMapFileAction(e.target.files[0])
   }
@@ -64,10 +55,9 @@ class Mapping extends Component {
           <button type="button"
           className="submitButton"
           onClick={this.handleContinue}>
-          Continue with Data Mapping
+            Continue with Data Mapping
           </button>
         )
-        
       }
     }
 
@@ -79,14 +69,18 @@ class Mapping extends Component {
           </div>
           <input className="inputs" 
             type='file' name='file' 
-            accept='.js' onChange={(e)=>this.onChangeSourceMap(e)}/>
+            accept='.js' 
+            onChange={(e)=>this.onChangeSourceMap(e)}
+          />
           <div className='text'>
             Select your Sample Files
           </div>
           <input 
             className="inputs" 
             type='file' name='file' 
-            accept='.csv' multiple onChange={(e)=>this.onChangeSourceFiles(e)}/>
+            accept='.csv' 
+            multiple onChange={(e)=>this.onChangeSourceFiles(e)}
+          />
           {displayProceed()}
         </Panel>
       </div>
