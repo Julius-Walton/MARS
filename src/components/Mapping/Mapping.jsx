@@ -5,6 +5,9 @@ import './Mapping.css'
 class Mapping extends Component {
   constructor(props){
     super(props);
+    this.state = {
+      samples: false,
+    }
 
     this.onChangeSourceFiles = this.onChangeSourceFiles.bind(this)
     this.onChangeSourceMap = this.onChangeSourceMap.bind(this)
@@ -22,12 +25,14 @@ class Mapping extends Component {
     for (var i = 0; i < fileList.length; i++){
       sourceFiles[i] = fileList[i]
     }
+    this.setState({samples: false})
     this.props.onChangeSourceFileAction(sourceFiles)
 
   }
 
   handleProceed(e){
     e.preventDefault()
+    this.setState({samples: true})
     this.props.onProceed(this.props.mapFile, this.props.sourceFiles)
     this.props.history.push("upload")
   }
@@ -39,7 +44,7 @@ class Mapping extends Component {
  
   render(){
     const displayProceed = () =>{
-      if (this.props.mapFile && this.props.sourceFiles && (!this.props.uploadSamples)){
+      if (this.props.mapFile && this.props.sourceFiles && (!this.props.uploadSamples) | (this.state.samples === false)){
         return(
           <div>
             <button type="button" 
@@ -50,6 +55,7 @@ class Mapping extends Component {
           </div>
 
         )
+        
       }else if (this.props.uploadSamples){
         return(
           <button type="button"
