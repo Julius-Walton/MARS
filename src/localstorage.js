@@ -1,3 +1,4 @@
+//Load Redux state from local storage
 export const loadState = () => {
 	try{
 		const serializedState = localStorage.getItem('state');
@@ -10,6 +11,7 @@ export const loadState = () => {
 	}
 }
 
+//Save Redux State to local storage
 export const saveState = (state) => {
 	try{
 		const serializedState = JSON.stringify(state);

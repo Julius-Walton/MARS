@@ -34,79 +34,91 @@ const styles = theme => ({
 class Upload extends Component{
     constructor(props){
         super(props);
-
         this.state={
             rowData: [],
             columnDefs: [],
             originalKeys: [],
-            uploadSamples: [],
-           
+            uploadSamples: []
         }
 
         this.handleOnUpload = this.handleOnUpload.bind(this)
     }
     
+    //If uploadSamples does exist, populate muiDatatable
+    componentWillMount(){
+        if(this.props.uploadSamples){
+            this.createTable(this.props.uploadSamples)
+        }
+        
+    }
 
+    /*This function is used when samples are first mapped
+      the data from the webworker must be recieved before
+      populating the muiDataTable
+    */
     componentWillReceiveProps(nextProps){
         if(nextProps.uploadSamples !== this.props.uploadSamples | nextProps.loading !== this.props.loading){
-
-            var uploadSamples =nextProps.uploadSamples
-            var sesarKeys = new Set()
-            var rowData = []
-            var columnDefs = []
-            var originalKeys = []
-
-            this.setState({uploadSamples})
-
-            for (let i = 0; i < nextProps.uploadSamples.length; i++){
-                for (let j=0; j < nextProps.uploadSamples[i].length; j++){
-
-                    let sampleData = nextProps.uploadSamples[i]
-                    let dataRow = nextProps.uploadSamples[i][j]
-
-                    if (dataRow.key !== undefined){
-                        sesarKeys.add(dataRow.key)
-                    }
-
-                    originalKeys =  [...new Set(sampleData.map(data =>
-                        {
-                            return data.originalKey
-                        }
-                    ))]
-                }
-               
-            }
-            sesarKeys = [...sesarKeys]
-            this.setState({originalKeys})
-
-            //get rowData & return a value based on a key
-            for (let i = 0; i < nextProps.uploadSamples.length; i++){
-                var keyValue = {}
-
-                for(let j=0; j < sesarKeys.length; j++){
-                    var keyData = sesarKeys[j]
-                    var data = nextProps.uploadSamples[i].filter(x => 
-                        {
-                                return x.key === sesarKeys[j]
-                        }).map(x => 
-                            {
-                                    return x.value
-                            })
-                    keyValue[keyData] = data[0] 
-                }
-
-                rowData = [...rowData, keyValue]
-                this.setState({rowData})
-            }
-
-            //create columnDefs based on the keys
-            for (let i = 0; i < sesarKeys.length; i++){
-                columnDefs.push(sesarKeys[i])  
-            }
-            this.setState({columnDefs})
-       
-            
+            this.createTable(nextProps.uploadSamples)
+           
         }
+    }
+
+    createTable(uploadSamples){
+        var sesarKeys = new Set()
+        var rowData = []
+        var columnDefs = []
+        var originalKeys = []
+
+        this.setState({uploadSamples})
+
+        for (let i = 0; i < uploadSamples.length; i++){
+            for (let j=0; j < uploadSamples[i].length; j++){
+
+                let sampleData = uploadSamples[i]
+                let dataRow = uploadSamples[i][j]
+
+                if (dataRow.key !== undefined){
+                    sesarKeys.add(dataRow.key)
+                }
+
+                originalKeys =  [...new Set(sampleData.map(data =>
+                    {
+                        return data.originalKey
+                    }
+                ))]
+            }
+           
+        }
+        sesarKeys = [...sesarKeys]
+        this.setState({originalKeys})
+
+        //get rowData & return a value based on a key
+        for (let i = 0; i < uploadSamples.length; i++){
+            var keyValue = {}
+
+            for(let j=0; j < sesarKeys.length; j++){
+                var keyData = sesarKeys[j]
+                var data = uploadSamples[i].filter(x => 
+                    {
+                            return x.key === sesarKeys[j]
+                    }).map(x => 
+                        {
+                                return x.value
+                        })
+                keyValue[keyData] = data[0] 
+            }
+
+            rowData = [...rowData, keyValue]
+            this.setState({rowData})
+        }
+
+        //create columnDefs based on the keys
+        for (let i = 0; i < sesarKeys.length; i++){
+            columnDefs.push(sesarKeys[i])  
+        }
+        this.setState({columnDefs})
+   
+        
     }
 
     handleOnUpload(selectedRows){
@@ -117,7 +129,9 @@ class Upload extends Component{
         }
 
         if (selectedSamples.length > 0){
-            this.props.onUpload(this.props.mapFile, this.props.uploadSamples, this.props.user, selectedSamples)
+            this.props.onUpload(this.props.mapFile, 
+                this.props.uploadSamples, 
+                this.props.user, selectedSamples)
         }
     }
    
@@ -142,13 +156,18 @@ class Upload extends Component{
         responsive: 'scroll',
         expandableRows: true,
         expandableRowsOnClick: true,
-        //allow rows with no igsn to be selected
+        //only allow rows with no igsn to be selected
         isRowSelectable: (dataIndex) => {
             return this.state.rowData[dataIndex].igsn === ""
         },
         customToolbarSelect: selectedRows => (
             <div>
-                <Button variant="contained" color="primary" onClick={() => this.handleOnUpload(selectedRows)}>Upload</Button>
+                <Button 
+                variant="contained" 
+                color="primary" 
+                onClick={() => this.handleOnUpload(selectedRows)}>
+                    Upload
+                </Button>
             </div>
             
         ),
@@ -171,10 +190,25 @@ class Upload extends Component{
                                 <TableBody>
                                     {rows[index].map(row => (
                                         <TableRow key={row.originalKey}>
-                                            <TableCell className={classes.column}>{row.originalKey}</TableCell>
-                                            <TableCell className={classes.column} align="left">{row.originalValue}</TableCell>
-                                            <TableCell className={classes.column} align="left">{row.key}</TableCell>
-                                            <TableCell className={classes.column} align="left">{row.value}</TableCell>
+                                            <TableCell 
+                                                className={classes.column}>
+                                                    {row.originalKey}
+                                            </TableCell>
+                                            <TableCell 
+                                                className={classes.column} 
+                                                align="left">
+                                                    {row.originalValue}
+                                            </TableCell>
+                                            <TableCell 
+                                                className={classes.column} 
+                                                align="left">
+                                                    {row.key}
+                                            </TableCell>
+                                            <TableCell 
+                                                className={classes.column} 
+                                                align="left">
+                                                    {row.value}
+                                            </TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody> 

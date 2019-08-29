@@ -2,64 +2,68 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import './Details.css'
 import { connect } from 'react-redux';
+import Button from '@material-ui/core/Button';
+import PropTypes from 'prop-types';
+import MUIDataTable from 'mui-datatables';
+import { withStyles, createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 
-import { AgGridReact } from 'ag-grid-react';
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-balham.css';
+
+const styles = theme => ({
+  root: {
+      width: '100%',
+      display: 'flex',
+      justifyContent: 'center',
+
+      overflowX: 'auto'
+    },
+  table: {
+      minWidth: '100%',
+      height: '2rem'
+  },
+  column: {
+      whiteSpace: "normal",
+      wordWrap: "break-word",
+      width: "25%"
+  } 
+})
 
 class Detail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // Column deffinitions for ag-grid
-      columnDefs: [
-        {headerName: "IGSN", field: "IGSN" ,checkboxSelection: true},
-        {headerName: "Sample Name", field: "sampleName"},
-        {headerName: "Latitude", field: "latitude"},
-        {headerName: "Longitude", field: "longitude"},
-        {headerName: "Elevation", field: "elevation"},
-      ],
+      columnDefs: ["IGSN", "Name", "Latitude", "Longitude", "Elevation"],
       rowData: [{}],
       loading: true,
-      page_no: 1,
-      limit: 20,
-      sortingFlag: 0,
-      sortSampleNamesFlag: false
     }
 
-    this.handleClickNext = this.handleClickNext.bind(this)
-    this.handleClickPrev = this.handleClickPrev.bind(this)
-    //TODO: add change limit
-    //this.changeLimit = this.changeLimit.bind(this)*/
     this.sendRequest = this.sendRequest.bind(this)
-    this.handleOpenProfile = this.handleOpenProfile.bind(this)
   }
 
   componentDidMount() {
     this.sendRequest(0)
   }
 
-  handleClickNext(e){
-    e.preventDefault()
-    this.sendRequest(1)
-  };
+  openWindow(selectedRows, displayData){
 
-  handleClickPrev(e){
-    e.preventDefault()
-    if(this.state.page_no !== 1) {
-      this.sendRequest(-1)
+    let rows = []
+    for (var i = 0; i < selectedRows.data.length; i++){
+      let index = selectedRows.data[i].index
+      rows.push(index)
     }
-  };
-  handleOpenProfile(e){
-    const length = this.gridApi.getSelectedNodes().length
-    for (var i = 0; i < length; i++){
-      let igsn = this.gridApi.getSelectedNodes()[i].data.IGSN
-      this.openWindow(igsn)
-    }
-  }
 
-  openWindow(igsn){
-    window.open(`https://sesardev.geosamples.org/sample/igsn/${igsn}`)
+    let samples = []
+    for (i = 0; i < rows.length; i++){
+      let index = rows[i]
+      let sample = displayData[index].data[0]
+      samples.push(sample)
+    }
+    
+    for (i = 0; i < samples.length; i++){
+      let igsn = samples[i]
+      var randomnumber = Math.floor((Math.random()*100)+1); 
+      window.open(`https://sesardev.geosamples.org/sample/igsn/${igsn}`,
+      "_blank",'PopUp',randomnumber,'scrollbars=1,menubar=0,resizable=1,width=850,height=500');
+    }
   }
 
   sendRequest(num){
@@ -69,12 +73,7 @@ class Detail extends Component {
 
     //API Request: Get IGSNs
     axios
-    .get(`https://sesardev.geosamples.org/samples/user_code/${this.props.usercode}`,{
-      params: {
-        limit: this.state.limit,
-        page_no: this.state.page_no + num
-      }
-    })
+    .get(`https://sesardev.geosamples.org/samples/user_code/${this.props.usercode}`)
     .then ( response => {
       const length = response.data.igsn_list.length
       response.data.igsn_list.map((igsn,i) => {
@@ -91,10 +90,10 @@ class Detail extends Component {
           const elevations = response.data.sample.elevation
           this.setState({rowData: [...this.state.rowData,
             {IGSN: igsn,
-              sampleName: sampleName,
-              latitude: latitudes,
-              longitude: longitudes,
-              elevation: elevations }]})
+              Name: sampleName,
+              Latitude: latitudes,
+              Longitude: longitudes,
+              Elevation: elevations }]})
 
           if(this.state.rowData.length === length){
             //Allow the information to be rendered.
@@ -116,6 +115,32 @@ class Detail extends Component {
   }
 
   render() {
+    const options = {
+      filter: true,
+      filterType: 'dropdown',
+      responsive: 'scroll',
+      customToolbarSelect: (selectedRows, displayData) => (
+        <div>
+            <Button 
+              variant="contained" 
+              color="primary" 
+              onClick={() => this.openWindow(selectedRows, displayData)}>
+                View Webpage for Selected Samples
+            </Button>
+        </div>
+      ),
+    }
+    
+    let theme = createMuiTheme({
+      overrides: {
+          MUIDataTableSelectCell: {
+              root: {
+                  backgroundColor: '#FFFF'
+              }
+          }
+      }
+    });
+
     if(this.state.loading === true) {
       return (
         <div className="outerDiv">
@@ -127,7 +152,6 @@ class Detail extends Component {
             </div>
           </div>
         </div>
-       
       )
     } else {
       
@@ -135,67 +159,29 @@ class Detail extends Component {
         <div style={{ width: "100%", height: "100%" }}>
           <div className="container">
             <div id="left"></div>
-
             <div className="center">
-              <div className="buttonContainer">
-                <div 
-                  className="btn-group " 
-                  role="group">
-                    <button type="button" 
-                      className="btn btn-primary samples" 
-                      onClick={this.handleOpenProfile}>
-                      View Webpage for Selected Samples
-                    </button>
-                </div>
-              </div>
-
-              <div
-                className="ag-theme-balham"
-                style={{
-                  height: '600px',
-                  width: '90%' ,
-                  margin: 'auto'
-                }}
-              >
-                <AgGridReact
-                  onGridReady= {params => this.gridApi = params.api}
-                  rowSelection="multiple"
-                  sortable={true}
-                  filter={true}
-                  columnDefs={this.state.columnDefs}
-                  rowData={this.state.rowData}>
-                </AgGridReact>
-              </div>
-
-              <div className="pageLabel">
-                <div className="label">
-                  Page {this.state.page_no}
-                </div>
-              </div>
-
-              <div className="buttonContainer">
-                <div className="btn-group buttonGroup" role="group">
-                  <button type="button" 
-                    className="btn btn-primary" 
-                    onClick={this.handleClickPrev}>
-                      Previous
-                  </button>
-                  <button type="button" 
-                    className="btn btn-primary" 
-                    onClick={this.handleClickNext}>
-                      Next
-                  </button>
-                </div>
+              <div className ="center">
+                    <MuiThemeProvider theme={theme}>
+                        <MUIDataTable
+                            title={"My Samples"}
+                            data={this.state.rowData}
+                            columns={this.state.columnDefs}
+                            options={options}
+                            />
+                    </MuiThemeProvider>   
               </div>
             </div>
+            <div id="right"></div>
           </div>
-
-          <div id="right"></div>
         </div>
       );
     }
   }
 }
+
+Detail.propTypes = {
+  classes: PropTypes.object.isRequired
+};
 
 function mapStateToProps(state){
   return{
@@ -203,5 +189,6 @@ function mapStateToProps(state){
   };
 }
 
-const Details = connect(mapStateToProps)(Detail)
-export default Details;
+
+const MySamples = connect(mapStateToProps)(Detail)
+export default withStyles(styles)(MySamples)

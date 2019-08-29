@@ -14,12 +14,12 @@ import './app.css'
 class Header extends Component {
   navbarLinks() {
 
-    //Return different links depending on the authentication status
+    //Return these links if the user is authenticated
     if (this.props.authenticated) {
       return(
         <ul className="nav">
             <li className="nav-item">
-                <Link className="nav-link" to="/details">Details</Link>
+                <Link className="nav-link" to="/mysamples">My Samples</Link>
             </li>
             <li className="nav-item">
                 <Link className="nav-link" to="/mapping">Mapping</Link>
@@ -31,6 +31,8 @@ class Header extends Component {
  
       );
     }
+    
+    //Default links to show if the user is not authenticated
     return (
       <ul className="nav">
         <li className="nav-item">
@@ -45,7 +47,7 @@ class Header extends Component {
         <div>
             <header>
                 <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                    <Link className="navbar-brand" to="/">MarsX</Link>
+                    <Link className="navbar-brand" to="/">Mars</Link>
                     <div>
                         {this.navbarLinks()}
                     </div>
@@ -55,10 +57,9 @@ class Header extends Component {
                 <Route exact path="/" component={HomePage} />
                 <Route path="/signin" component={noRequireAuth(SignIn)} />
                 <Route path="/signout" component={requireAuth(SignOut)} />
-                <Route path="/details" component={requireAuth(Details)} />
+                <Route path="/mysamples" component={requireAuth(Details)} />
                 <Route path="/mapping" component={requireAuth(Mapping_Container)} />
                 <Route path="/upload" component={requireAuth(Upload_Container)}/>
-
             </main>
         </div>
      

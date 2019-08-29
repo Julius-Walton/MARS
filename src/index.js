@@ -12,12 +12,10 @@ import rootReducer from './reducers'
 import { loadState, saveState } from './localstorage';
 import * as serviceWorker from './serviceWorker';
 
-//tomcat web application manager
-// warfile in cirdle
+
 export const history = createBrowserHistory()
 
 const persistedState = loadState();
-//const initialState = {}
 
 const enhancers = []
 const middleware = [
@@ -50,9 +48,7 @@ store.subscribe(() => {
     saveState({
         auth: store.getState().auth
     });
-    });
-    
-
+});
 
 const target = document.querySelector('#root')
 
