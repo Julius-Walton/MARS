@@ -28,9 +28,9 @@ const styles = theme => ({
         whiteSpace: "normal",
         wordWrap: "break-word",
         width: "25%"
-    } 
+    }
 })
-   
+
 class Upload extends Component{
     constructor(props){
         super(props);
@@ -43,13 +43,13 @@ class Upload extends Component{
 
         this.handleOnUpload = this.handleOnUpload.bind(this)
     }
-    
+
     //If uploadSamples does exist, populate muiDatatable
     componentWillMount(){
         if(this.props.uploadSamples){
             this.createTable(this.props.uploadSamples)
         }
-        
+
     }
 
     /*This function is used when samples are first mapped
@@ -57,9 +57,10 @@ class Upload extends Component{
       populating the muiDataTable
     */
     componentWillReceiveProps(nextProps){
-        if(nextProps.uploadSamples !== this.props.uploadSamples | nextProps.loading !== this.props.loading){
+        if(nextProps.uploadSamples !== this.props.uploadSamples |
+             nextProps.loading !== this.props.loading){
             this.createTable(nextProps.uploadSamples)
-           
+
         }
     }
 
@@ -87,7 +88,7 @@ class Upload extends Component{
                     }
                 ))]
             }
-           
+
         }
         sesarKeys = [...sesarKeys]
         this.setState({originalKeys})
@@ -98,14 +99,14 @@ class Upload extends Component{
 
             for(let j=0; j < sesarKeys.length; j++){
                 var keyData = sesarKeys[j]
-                var data = uploadSamples[i].filter(x => 
+                var data = uploadSamples[i].filter(x =>
                     {
                             return x.key === sesarKeys[j]
-                    }).map(x => 
+                    }).map(x =>
                         {
                                 return x.value
                         })
-                keyValue[keyData] = data[0] 
+                keyValue[keyData] = data[0]
             }
 
             rowData = [...rowData, keyValue]
@@ -114,11 +115,11 @@ class Upload extends Component{
 
         //create columnDefs based on the keys
         for (let i = 0; i < sesarKeys.length; i++){
-            columnDefs.push(sesarKeys[i])  
+            columnDefs.push(sesarKeys[i])
         }
         this.setState({columnDefs})
-   
-        
+
+
     }
 
     handleOnUpload(selectedRows){
@@ -129,13 +130,13 @@ class Upload extends Component{
         }
 
         if (selectedSamples.length > 0){
-            this.props.onUpload(this.props.mapFile, 
-                this.props.uploadSamples, 
+            this.props.onUpload(this.props.mapFile,
+                this.props.uploadSamples,
                 this.props.user, selectedSamples)
         }
     }
-   
-     
+
+
    render(){
     const {classes} = this.props;
     var rows = this.state.uploadSamples
@@ -149,7 +150,7 @@ class Upload extends Component{
             }
         }
     });
-    
+
     const options = {
         filter: true,
         filterType: 'dropdown',
@@ -162,14 +163,14 @@ class Upload extends Component{
         },
         customToolbarSelect: selectedRows => (
             <div>
-                <Button 
-                variant="contained" 
-                color="primary" 
+                <Button
+                variant="contained"
+                color="primary"
                 onClick={() => this.handleOnUpload(selectedRows)}>
                     Upload
                 </Button>
             </div>
-            
+
         ),
         renderExpandableRow: (rowData, rowMeta) => {
             const colSpan = rowData.length
@@ -190,28 +191,28 @@ class Upload extends Component{
                                 <TableBody>
                                     {rows[index].map(row => (
                                         <TableRow key={row.originalKey}>
-                                            <TableCell 
+                                            <TableCell
                                                 className={classes.column}>
                                                     {row.originalKey}
                                             </TableCell>
-                                            <TableCell 
-                                                className={classes.column} 
+                                            <TableCell
+                                                className={classes.column}
                                                 align="left">
                                                     {row.originalValue}
                                             </TableCell>
-                                            <TableCell 
-                                                className={classes.column} 
+                                            <TableCell
+                                                className={classes.column}
                                                 align="left">
                                                     {row.key}
                                             </TableCell>
-                                            <TableCell 
-                                                className={classes.column} 
+                                            <TableCell
+                                                className={classes.column}
                                                 align="left">
                                                     {row.value}
                                             </TableCell>
                                         </TableRow>
                                     ))}
-                                </TableBody> 
+                                </TableBody>
                             </Table>
                         </Paper>
                     </TableCell>
@@ -234,7 +235,7 @@ class Upload extends Component{
                             data={this.state.rowData}
                             columns={this.state.columnDefs}
                             options={options}/>
-                    </MuiThemeProvider>   
+                    </MuiThemeProvider>
                 </div>
 
                 <div id="right"></div>
@@ -245,8 +246,8 @@ class Upload extends Component{
         return(
             <div className="outerDiv">
                 <div className="d-flex justify-content-center">
-                     <div className="spinner-grow text-primary" 
-                     style={{width: '6rem', height: '6rem'}} 
+                     <div className="spinner-grow text-primary"
+                     style={{width: '6rem', height: '6rem'}}
                      role="status">
                         <span className="sr-only">Loading...</span>
                     </div>
@@ -254,7 +255,7 @@ class Upload extends Component{
             </div>
         )
     }
-        
+
     }
 }
 Upload.propTypes = {

@@ -1,16 +1,17 @@
-import React, { Component } from 'react';
-import { Form ,Field, reduxForm } from 'redux-form/immutable';
-import { signInAction } from '../../actions/auth';
+import './SignIn.css';
 import { connect } from 'react-redux'
-import './SignIn.css'
+import React, { Component } from 'react';
+import { signInAction } from '../../actions/auth';
+import { Form ,Field, reduxForm } from 'redux-form/immutable';
+
 
 const renderField = ({ input, label, type, meta: { touched, error } }) => (
   <div>
     <label>{label}</label>
     <div>
-      <input {...input} 
+      <input {...input}
         style={{color: 'black'}}
-        placeholder={label} 
+        placeholder={label}
         type={type}
       />
       {touched && error && <span>{error}</span>}

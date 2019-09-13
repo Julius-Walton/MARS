@@ -1,11 +1,15 @@
-import { AUTHENTICATED, UNAUTHENTICATED, AUTHENTICATION_ERROR } from '../actions/auth';
+import {
+    AUTHENTICATED,
+    UNAUTHENTICATED,
+    AUTHENTICATION_ERROR
+} from '../actions/auth';
 
 export default function(state={}, action) {
   switch(action.type) {
     case AUTHENTICATED:
-      return { ...state, authenticated: true, 
-        username: action.username, 
-        usercode: action.usercode, 
+      return { ...state, authenticated: true,
+        username: action.username,
+        usercode: action.usercode,
         password: action.password };
     case UNAUTHENTICATED:
       return { ...state, authenticated: false };
