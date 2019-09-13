@@ -1,4 +1,9 @@
-import {UPLOAD_REQUEST, UPLOAD_SUCCESS, UPLOAD_FAILURE, INITIALIZE_SAMPLES} from '../actions/upload'
+import {
+    UPLOAD_REQUEST,
+    UPLOAD_SUCCESS,
+    UPLOAD_FAILURE,
+    INITIALIZE_SAMPLES
+} from '../actions/upload'
 
 export default function reducer(state = {}, action) {
   switch(action.type) {
@@ -22,8 +27,10 @@ export default function reducer(state = {}, action) {
             key:'igsn',
             value:results[i].igsn
         }
-        //IGSN for each sample
-        samples[index][0] = igsn //for each sample, the sample is equal to its previous version with IGSN added to the end
+        /*IGSN for each sample
+        for each sample, the sample is equal to its
+        previous version with IGSN added to the end*/
+        samples[index][0] = igsn
       }
       console.log("<==== Upload Succcessful ====>")
       return {...state, samples: samples, loading: false}

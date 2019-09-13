@@ -1,18 +1,18 @@
-import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import React, { Component } from 'react';
 import { Route, Link } from 'react-router-dom';
 
 //Components
-import requireAuth from './components/higherOrderComponents/require_auth';
-import noRequireAuth from './components/higherOrderComponents/no_require_auth';
-import HomePage from './components/Homepage/HomePage';
 import SignIn from './components/SignIn/SignIn';
 import SignOut from './components/SignOut/SignOut';
-import Details from './components/Details/Details'
+import Details from './components/Details/Details';
+import HomePage from './components/Homepage/HomePage';
+import requireAuth from './components/higherOrderComponents/require_auth';
+import noRequireAuth from './components/higherOrderComponents/no_require_auth';
 
 //Containers
-import Mapping_Container from './components/Mapping/Mapping_Container';
 import Upload_Container from './components/Upload/Upload_Container';
+import Mapping_Container from './components/Mapping/Mapping_Container';
 
 //CSS
 import './app.css'
